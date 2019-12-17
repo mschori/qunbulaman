@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Game extends Thread {
     private Integer amountOfPlayers = 1;
+    private Integer gameFieldDimension = 13;
     private Player[] players;
     private boolean gameEnd = false;
 
