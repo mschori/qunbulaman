@@ -1,16 +1,17 @@
 package backend;
 
 import api.Player;
+import api.SocketHandler;
 
 import java.io.*;
 import java.net.ServerSocket;
 
 public class Server {
-    private Integer amountOfPlayers = 1;
+    private Integer amountOfPlayersPerGame = 1;
     private final Integer port = 3141;
     private ServerSocket serverSocket;
     private Integer catchedPlayers = 0;
-    private Player[] players = new Player[this.amountOfPlayers];
+    private Player[] players = new Player[this.amountOfPlayersPerGame];
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -24,11 +25,11 @@ public class Server {
             while (true) {
 
                 SocketHandler tmp_socket = new SocketHandler(serverSocket.accept());
-                String firstInputFromClient = tmp_socket.receiveTimeout();
+                String firstInputFromClient = tmp_socket.receiveForce();
 
                 if (firstInputFromClient.matches("^Name: .*")){
                     Player player = new Player(tmp_socket);
-                    String playerName = this.extractPlayerName(firstInputFromClient);
+                    String playerName = firstInputFromClient.substring(6);
                     player.setName(playerName);
                     this.players[this.catchedPlayers] = player;
                     this.catchedPlayers ++;
@@ -37,7 +38,7 @@ public class Server {
                     tmp_socket.send("You are a hacker, right?");
                 }
 
-                if (this.catchedPlayers.equals(this.amountOfPlayers)){
+                if (this.catchedPlayers.equals(this.amountOfPlayersPerGame)){
                     Game game = new Game(this.players);
                     this.informPlayers("Game starting...");
                     game.start();
@@ -57,10 +58,6 @@ public class Server {
         } catch (IOException e) {
             System.out.println("Stoping Server failed...");
         }
-    }
-
-    private String extractPlayerName(String inputFromClient){
-        return inputFromClient.substring(6);
     }
 
     private void informPlayers(String message){

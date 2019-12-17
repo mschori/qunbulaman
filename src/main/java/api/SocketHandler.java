@@ -1,17 +1,17 @@
-package backend;
+package api;
 
 import java.io.*;
 import java.net.Socket;
 
 public class SocketHandler extends Thread {
-    private DataInputStream inStream = null;
-    private PrintStream outStream = null;
+    private BufferedReader inStream = null;
+    private PrintWriter outStream = null;
     private Socket socket = null;
 
     public SocketHandler(Socket sock) {
         try {
-            inStream = new DataInputStream(new BufferedInputStream(sock.getInputStream(), 1024));
-            outStream = new PrintStream(new BufferedOutputStream(sock.getOutputStream(), 1024), true);
+            inStream = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            outStream = new PrintWriter(sock.getOutputStream(), true);
             socket = sock;
         } catch (IOException e) {
             System.out.println("Couldn’t initialize SocketAction:" + e);
@@ -19,16 +19,16 @@ public class SocketHandler extends Thread {
         }
     }
 
-    public void send(String msg) {
-        outStream.println(msg);
+    public void send(String message) {
+        outStream.println(message);
     }
 
-    public String receiveTimeout() throws IOException {
+    public String receiveForce() throws IOException {
             return inStream.readLine();
     }
 
     public String receive() throws IOException {
-        if (inStream.available() > 0){
+        if (inStream.ready()){
             return inStream.readLine();
         }else{
             return "empty";

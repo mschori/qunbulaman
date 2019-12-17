@@ -29,15 +29,15 @@ public class Game extends Thread {
                     continue;
                 }
 
-                String json = null;
+                String action = null;
                 try {
-                    json = this.getMessage(this.players[x]);
+                    action = this.getMessage(this.players[x]);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                if (!json.equals("empty")){
-                    this.calculateGame(json);
+                if (action != null && !action.equals("empty")){
+                    this.calculateGame(x + 1, action);
                 }
             }
 
@@ -69,7 +69,7 @@ public class Game extends Thread {
         }
     }
 
-    private void calculateGame(String json) {
+    private void calculateGame(Integer playerNumber, String action) {
         // Magic happens
         this.gameEnd = false;
     }
