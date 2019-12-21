@@ -29,7 +29,7 @@ public class TestClient {
         clientSocket.close();
     }
 
-    public String getMesage() throws IOException {
+    public String getMessage() throws IOException {
         return in.readLine();
     }
 
