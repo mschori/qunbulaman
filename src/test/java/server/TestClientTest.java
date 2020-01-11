@@ -1,6 +1,6 @@
-package backend;
+package server;
 
-import frontend.TestClient;
+import client.TestClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
