@@ -18,7 +18,7 @@ class TestClientTest {
 
         for (int x = 0; x < 5; x++){
             TimeUnit.SECONDS.sleep(1);
-            System.out.println(client.getMesage());
+            System.out.println(client.getMessage());
         }
 
         client.stopConnection();
