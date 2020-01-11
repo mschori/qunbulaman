@@ -1,0 +1,3 @@
+Backend:
+- PayloadHandler mit mehreren Funktionen erweitern. Zum Beispiel für Spieleranfragen oder Spielerinformationen. Nicht nur für die Übertragung des Spielfeldes.
+
