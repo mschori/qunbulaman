@@ -1,10 +1,13 @@
 package api;
 
 
-public class Player {
+import api.data.Data;
+import server.GameObserver;
+
+public class Player implements GameObserver {
 
     private String name;
-    public SocketHandler socket;
+    private SocketHandler socket;
     private Integer posX;
     private Integer posY;
     private String color;
@@ -43,5 +46,10 @@ public class Player {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    @Override
+    public void update(Data data) {
+        this.socket.send(1, data.getData());
     }
 }
