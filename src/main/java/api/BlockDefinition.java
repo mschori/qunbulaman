@@ -10,5 +10,4 @@ public class BlockDefinition {
     Integer playerBlock2 = 62;
     Integer playerBlock3 = 63;
     Integer playerBlock4 = 64;
-
 }

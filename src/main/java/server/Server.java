@@ -4,13 +4,16 @@ import api.Player;
 import api.SocketHandler;
 import api.data.Data;
 import api.data.DataString;
+import api.fields.Field;
+import api.fields.FieldFactoryImpl;
 
 import java.io.*;
 import java.net.ServerSocket;
 
 public class Server {
-    private Integer amountOfPlayersPerGame = 1;
+    private final Integer amountOfPlayersPerGame = 1;
     private final Integer port = 3141;
+    private final Integer difficulty = 1;
     private ServerSocket serverSocket;
     private Integer catchedPlayers = 0;
     private Player[] players = new Player[this.amountOfPlayersPerGame];
@@ -40,18 +43,17 @@ public class Server {
                     this.catchedPlayers++;
                     this.informPlayers(playerName + " joined game!");
                 } else {
-                    String[][] message = {{"Message: Hallo"}, {}};
-                    tmp_socket.send(2, message);
+                    this.message.setMessage("Melde dich bitte richtig an...");
+                    tmp_socket.send(1, this.message);
                 }
 
                 if (this.catchedPlayers.equals(this.amountOfPlayersPerGame)) {
-                    Game game = new Game(this.players);
+                    Game game = new Game(this.players, this.generateField(this.difficulty));
                     this.informPlayers("Game starting...");
                     game.start();
                     this.catchedPlayers = 0;
                 }
             }
-
         } catch (IOException e) {
             System.out.println("Server failed...");
         }
@@ -71,6 +73,14 @@ public class Server {
         for (int x = 0; x < this.catchedPlayers; x++) {
             this.players[x].update(1, this.message);
         }
+    }
+
+    private Integer[][] generateField(Integer difficulty) {
+
+        FieldFactoryImpl fieldFactory = new FieldFactoryImpl();
+        Field field = fieldFactory.createField(difficulty);
+
+        return field.getField();
     }
 }
 

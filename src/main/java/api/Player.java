@@ -2,7 +2,6 @@ package api;
 
 
 import api.data.Data;
-import server.GameObserver;
 
 import java.io.IOException;
 

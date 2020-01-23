@@ -1,48 +1,35 @@
 package server;
 
+import api.Bomb;
+import api.GameObserver;
 import api.Player;
 import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Game extends Thread {
 
+    private final Integer maxAlivePlayers = 0;
     private Player[] players;
-    private Boolean gameEnd = false;
-    private List<GameObserver> observers = new ArrayList<GameObserver>();
+    private List<GameObserver> observers = new ArrayList<>();
+    private List<Bomb> bombs = new ArrayList<>();
     private DataInteger field = new DataInteger();
     private DataString message = new DataString();
     private Boolean needToUpdateObservers = false;
-    private Integer playersAlive = 4;
+    private Integer playersAlive;
 
-    public Game(Player[] players) {
+    public Game(Player[] players, Integer[][] field) {
         this.players = players;
+        this.playersAlive = players.length;
+        this.field.setData(field);
 
-        // Create field
-        Integer[][] testField = new Integer[10][10];
-        for (Integer[] row : testField) {
-            Arrays.fill(row, 50);
-        }
-        testField[0][0] = 61;
-        testField[0][9] = 62;
-        testField[9][0] = 63;
-        testField[9][9] = 64;
-        this.field.setData(testField);
-
-        // Set player-position
-        players[0].setPosX(0);
-        players[0].setPosY(0);
-        players[1].setPosX(0);
-        players[1].setPosY(9);
-        players[2].setPosX(9);
-        players[2].setPosY(0);
-        players[3].setPosX(9);
-        players[3].setPosY(9);
+        // Set player-positions
+        this.setPositions();
 
         // Add players to observers
         for (Player player : players) {
@@ -50,16 +37,70 @@ public class Game extends Thread {
         }
     }
 
+    private void setPositions() {
+
+        Integer[][] field = this.field.getData();
+
+        switch (this.players.length) {
+            case 1:
+                field[0][0] = 61;
+                this.players[0].setPosX(0);
+                this.players[0].setPosY(0);
+                break;
+            case 2:
+                field[0][0] = 61;
+                field[0][field.length] = 62;
+                this.players[0].setPosX(0);
+                this.players[0].setPosY(0);
+                this.players[1].setPosX(0);
+                this.players[1].setPosY(field.length);
+                break;
+            case 3:
+                field[0][0] = 61;
+                field[0][field.length] = 62;
+                field[field.length][0] = 63;
+                this.players[0].setPosX(0);
+                this.players[0].setPosY(0);
+                this.players[1].setPosX(0);
+                this.players[1].setPosY(field.length);
+                this.players[2].setPosX(field.length);
+                this.players[2].setPosY(0);
+                break;
+            case 4:
+                field[0][0] = 61;
+                field[0][field.length] = 62;
+                field[field.length][0] = 63;
+                field[field.length][field.length] = 64;
+                this.players[0].setPosX(0);
+                this.players[0].setPosY(0);
+                this.players[1].setPosX(0);
+                this.players[1].setPosY(field.length);
+                this.players[2].setPosX(field.length);
+                this.players[2].setPosY(0);
+                this.players[3].setPosX(field.length);
+                this.players[3].setPosY(field.length);
+                break;
+            default:
+                break;
+        }
+
+        this.field.setData(field);
+    }
+
     public void run() {
 
         this.message.setMessage("Das Spiel beginnt in 3 Sekunden.");
         this.updateObservers(1, this.message);
 
-        while (this.playersAlive > 1) {
+        while (this.playersAlive > this.maxAlivePlayers) {
 
             this.needToUpdateObservers = false;
 
             for (int x = 0; x < this.players.length; x++) {
+
+                if (this.players[x].getDead()) {
+                    continue;
+                }
 
                 Data action = null;
                 try {
@@ -68,8 +109,9 @@ public class Game extends Thread {
                     e.printStackTrace();
                 }
 
-                if (action instanceof DataString && !this.players[x].getDead()) {
+                if (action instanceof DataString) {
                     this.calculatePlayerAction(x, ((DataString) action).getData());
+                    this.calculateBomb();
                 }
             }
 
@@ -82,35 +124,130 @@ public class Game extends Thread {
     }
 
     private void endGame() {
-        // inform every player if loser or winner
+
+        for (Player player : this.players) {
+            if (player.getDead()) {
+                this.message.setMessage("You lose!");
+                player.update(1, this.message);
+            } else {
+                this.message.setMessage("You win!");
+                player.update(1, this.message);
+            }
+        }
     }
 
     private void calculatePlayerAction(Integer playerNumber, String action) {
 
+        Integer posX = this.players[playerNumber].getPosX();
+        Integer posY = this.players[playerNumber].getPosY();
+        Integer[][] field = this.field.getData();
+
         switch (action) {
             case "up":
+                if (posY > 0) {
+                    if (field[posX][posY - 1] == 50 || field[posX][posY - 1] == 53) {
+                        if (field[posX][posY] != 53) {
+                            field[posX][posY] = 50;
+                        }
+                        field[posX][posY - 1] = 60 + (playerNumber + 1);
+                        this.players[playerNumber].setPosY(posY - 1);
+                    }
+                }
                 this.needToUpdateObservers = true;
                 break;
             case "down":
+                if (posY + 1 < field.length) {
+                    if (field[posX][posY + 1] == 50 || field[posX][posY - 1] == 53) {
+                        if (field[posX][posY] != 53) {
+                            field[posX][posY] = 50;
+                        }
+                        field[posX][posY + 1] = 60 + (playerNumber + 1);
+                        this.players[playerNumber].setPosY(posY + 1);
+                    }
+                }
                 this.needToUpdateObservers = true;
                 break;
             case "left":
+                if (posX > 0) {
+                    if (field[posX - 1][posY] == 50 || field[posX - 1][posY] == 53) {
+                        if (field[posX][posY] != 53) {
+                            field[posX][posY] = 50;
+                        }
+                        field[posX - 1][posY] = 60 + (playerNumber + 1);
+                        this.players[playerNumber].setPosX(posX - 1);
+                    }
+                }
                 this.needToUpdateObservers = true;
                 break;
             case "right":
+                if (posX + 1 < field.length) {
+                    if (field[posX + 1][posY] == 50 || field[posX + 1][posY] == 53) {
+                        if (field[posX][posY] != 53) {
+                            field[posX][posY] = 50;
+                        }
+                        field[posX + 1][posY] = 60 + (playerNumber + 1);
+                        this.players[playerNumber].setPosX(posX + 1);
+                    }
+                }
                 this.needToUpdateObservers = true;
                 break;
             case "bomb":
+                Bomb bomb = new Bomb(posX, posY);
+                this.bombs.add(bomb);
+                field[posX][posY] = 53;
                 this.needToUpdateObservers = true;
                 break;
             case "disconnect":
                 this.removeObserver(this.players[playerNumber]);
                 break;
+            default:
+                break;
         }
+
+        this.field.setData(field);
     }
 
     private void calculateBomb() {
-        // set bomb-timeout and calculate deaths
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        Integer[][] field = this.field.getData();
+
+        if (!this.bombs.isEmpty()) {
+            for (Bomb bomb : this.bombs) {
+                if ((currentTimestamp.getTime() - bomb.getPlacedTimeStamp().getTime()) > 3000) {
+                    Integer posX = bomb.getPosX();
+                    Integer posY = bomb.getPosY();
+                    for (int x = -1; x < posX + 1; x++) {
+                        for (int y = -1; y < posY + 1; y++) {
+                            if ((posX + x) >= 0 && (posX + x) <= field.length && (posY + y) >= 0 && (posY + y) <= field.length) {
+                                if (field[posX + x][posY + y] == 51) {
+                                    field[posX + x][posY + y] = 50;
+                                } else if (field[posX + x][posY + y] == 61) {
+                                    field[posX + x][posY + y] = 50;
+                                    this.players[0].setDead(true);
+                                    this.playersAlive--;
+                                } else if (field[posX + x][posY + y] == 62) {
+                                    field[posX + x][posY + y] = 50;
+                                    this.players[1].setDead(true);
+                                    this.playersAlive--;
+                                } else if (field[posX + x][posY + y] == 63) {
+                                    field[posX + x][posY + y] = 50;
+                                    this.players[2].setDead(true);
+                                    this.playersAlive--;
+                                } else if (field[posX + x][posY + y] == 64) {
+                                    field[posX + x][posY + y] = 50;
+                                    this.players[3].setDead(true);
+                                    this.playersAlive--;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.needToUpdateObservers = true;
+        }
+
+        this.field.setData(field);
     }
 
     private void addObserver(GameObserver observer) {
@@ -126,6 +263,4 @@ public class Game extends Thread {
             gameObserver.update(key, data);
         }
     }
-
-
 }
