@@ -13,6 +13,7 @@ public class Player implements GameObserver {
     private Integer posX;
     private Integer posY;
     private String color;
+    private Boolean isDead = false;
 
     public Player(SocketHandler socket) {
         this.socket = socket;
@@ -48,6 +49,14 @@ public class Player implements GameObserver {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Boolean getDead() {
+        return isDead;
+    }
+
+    public void setDead(Boolean dead) {
+        isDead = dead;
     }
 
     public Data getInput() throws IOException {

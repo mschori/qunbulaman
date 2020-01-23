@@ -7,20 +7,47 @@ import api.data.DataString;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Game extends Thread {
 
     private Player[] players;
-    private boolean gameEnd = false;
+    private Boolean gameEnd = false;
     private List<GameObserver> observers = new ArrayList<GameObserver>();
     private DataInteger field = new DataInteger();
     private DataString message = new DataString();
+    private Boolean needToUpdateObservers = false;
+    private Integer playersAlive = 4;
 
     public Game(Player[] players) {
         this.players = players;
-        Integer[][] testField = {{1, 2}, {3, 4}};
+
+        // Create field
+        Integer[][] testField = new Integer[10][10];
+        for (Integer[] row : testField) {
+            Arrays.fill(row, 50);
+        }
+        testField[0][0] = 61;
+        testField[0][9] = 62;
+        testField[9][0] = 63;
+        testField[9][9] = 64;
         this.field.setData(testField);
+
+        // Set player-position
+        players[0].setPosX(0);
+        players[0].setPosY(0);
+        players[1].setPosX(0);
+        players[1].setPosY(9);
+        players[2].setPosX(9);
+        players[2].setPosY(0);
+        players[3].setPosX(9);
+        players[3].setPosY(9);
+
+        // Add players to observers
+        for (Player player : players) {
+            this.addObserver(player);
+        }
     }
 
     public void run() {
@@ -28,13 +55,11 @@ public class Game extends Thread {
         this.message.setMessage("Das Spiel beginnt in 3 Sekunden.");
         this.updateObservers(1, this.message);
 
-        while (true) {
+        while (this.playersAlive > 1) {
+
+            this.needToUpdateObservers = false;
 
             for (int x = 0; x < this.players.length; x++) {
-
-                if (this.gameEnd) {
-                    continue;
-                }
 
                 Data action = null;
                 try {
@@ -43,35 +68,56 @@ public class Game extends Thread {
                     e.printStackTrace();
                 }
 
-                if (action instanceof DataString) {
-                    String[][] input = (String[][]) action.getData();
-                    this.calculateGame(x + 1, input[0][0]);
+                if (action instanceof DataString && !this.players[x].getDead()) {
+                    this.calculatePlayerAction(x, ((DataString) action).getData());
                 }
             }
 
-            this.updateObservers(2, this.field);
-
-            if (this.gameEnd) {
-                this.endGame();
-                break;
+            if (this.needToUpdateObservers) {
+                this.updateObservers(2, this.field);
             }
         }
+
+        this.endGame();
     }
 
     private void endGame() {
-
+        // inform every player if loser or winner
     }
 
-    private void calculateGame(Integer playerNumber, String action) {
-        // Magic happens with this.field ect...
-        this.gameEnd = false;
+    private void calculatePlayerAction(Integer playerNumber, String action) {
+
+        switch (action) {
+            case "up":
+                this.needToUpdateObservers = true;
+                break;
+            case "down":
+                this.needToUpdateObservers = true;
+                break;
+            case "left":
+                this.needToUpdateObservers = true;
+                break;
+            case "right":
+                this.needToUpdateObservers = true;
+                break;
+            case "bomb":
+                this.needToUpdateObservers = true;
+                break;
+            case "disconnect":
+                this.removeObserver(this.players[playerNumber]);
+                break;
+        }
     }
 
-    public void addObserver(GameObserver observer) {
+    private void calculateBomb() {
+        // set bomb-timeout and calculate deaths
+    }
+
+    private void addObserver(GameObserver observer) {
         this.observers.add(observer);
     }
 
-    public void removeObserver(GameObserver observer) {
+    private void removeObserver(GameObserver observer) {
         this.observers.remove(observer);
     }
 
