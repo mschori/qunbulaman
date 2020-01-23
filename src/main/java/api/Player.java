@@ -4,6 +4,8 @@ package api;
 import api.data.Data;
 import server.GameObserver;
 
+import java.io.IOException;
+
 public class Player implements GameObserver {
 
     private String name;
@@ -48,8 +50,12 @@ public class Player implements GameObserver {
         this.color = color;
     }
 
+    public Data getInput() throws IOException {
+        return this.socket.receive();
+    }
+
     @Override
-    public void update(Data data) {
-        this.socket.send(1, data.getData());
+    public void update(Integer key, Data data) {
+        this.socket.send(key, data.getData());
     }
 }

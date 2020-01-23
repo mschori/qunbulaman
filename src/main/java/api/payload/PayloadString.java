@@ -4,7 +4,7 @@ public class PayloadString implements Payload {
 
     private String encryptedPayload = null;
 
-    public PayloadString(String[][] data) {
+    public PayloadString(String data) {
         this.encryptData(data);
     }
 
@@ -13,7 +13,7 @@ public class PayloadString implements Payload {
     }
 
     @Override
-    public void encryptData(Object[][] data) {
-        this.encryptedPayload = "Tschüss";
+    public void encryptData(Object data) {
+        this.encryptedPayload = "Message: " + data;
     }
 }

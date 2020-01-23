@@ -5,9 +5,9 @@ public class DataFactoryImpl implements DataFactory {
     @Override
     public Data createData(Integer key, String payload) {
         if (key == 1) {
-            //dfd
+            return new DataString(payload);
         } else if (key == 2) {
-            //dfdf
+            return new DataInteger(payload);
         }
         return null;
     }

@@ -4,5 +4,5 @@ import api.data.Data;
 
 public interface GameObserver {
 
-    void update(Data payload);
+    void update(Integer key, Data payload);
 }

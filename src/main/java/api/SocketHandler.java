@@ -27,7 +27,7 @@ public class SocketHandler extends Thread {
         }
     }
 
-    public void send(Integer key, Object[][] data) {
+    public void send(Integer key, Object data) {
         Payload payload = this.payloadFactory.createPayload(key, data);
         outStream.println(payload.getPayload());
     }

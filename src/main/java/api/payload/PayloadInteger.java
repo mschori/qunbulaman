@@ -13,7 +13,7 @@ public class PayloadInteger implements Payload {
     }
 
     @Override
-    public void encryptData(Object[][] data) {
+    public void encryptData(Object data) {
 
         Integer[][] integerData = (Integer[][]) data;
 
@@ -29,6 +29,6 @@ public class PayloadInteger implements Payload {
             payload.append(outerSplit);
         }
         payload.setLength(payload.length() - 1);
-        this.encryptedPayload = payload.toString();
+        this.encryptedPayload = "Field: " + payload.toString();
     }
 }

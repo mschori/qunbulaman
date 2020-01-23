@@ -4,8 +4,15 @@ public class DataInteger implements Data {
 
     private Integer[][] data;
 
+    public DataInteger() {
+    }
+
     public DataInteger(String payload) {
         this.decryptPayload(payload);
+    }
+
+    public void setData(Integer[][] data) {
+        this.data = data;
     }
 
     public Integer[][] getData() {
@@ -14,6 +21,13 @@ public class DataInteger implements Data {
 
     @Override
     public void decryptPayload(String payload) {
+
+        if (!payload.contains("Field: ")) {
+            this.data = null;
+            return;
+        }
+
+        payload = payload.substring(7);
 
         String outerSplit = "%";
         String[] firstSplit = payload.split(outerSplit);

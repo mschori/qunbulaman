@@ -4,5 +4,5 @@ public interface Data {
 
     void decryptPayload(String payload);
 
-    Object[][] getData();
+    Object getData();
 }
