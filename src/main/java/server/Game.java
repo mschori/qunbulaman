@@ -7,7 +7,6 @@ import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +21,12 @@ public class Game extends Thread {
     private DataString message = new DataString();
     private Boolean needToUpdateObservers = false;
     private Integer playersAlive;
+    private Integer activePlayers;
 
     public Game(Player[] players, Integer[][] field) {
         this.players = players;
         this.playersAlive = players.length;
+        this.activePlayers = players.length;
         this.field.setData(field);
 
         // Set player-positions
@@ -89,6 +90,12 @@ public class Game extends Thread {
 
     public void run() {
 
+        System.out.println("Field initialised. Sending everyone the field...");
+        this.updateObservers(2, this.field);
+
+        System.out.println("Check if players are ready...");
+        this.checkIfPlayersReady();
+
         this.message.setMessage("Das Spiel beginnt in 3 Sekunden.");
         this.updateObservers(1, this.message);
 
@@ -103,11 +110,9 @@ public class Game extends Thread {
                 }
 
                 Data action = null;
-                try {
-                    action = this.players[x].getInput();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+                action = this.players[x].getInput();
+
 
                 if (action instanceof DataString) {
                     this.calculatePlayerAction(x, ((DataString) action).getData());
@@ -121,6 +126,57 @@ public class Game extends Thread {
         }
 
         this.endGame();
+    }
+
+    private void checkDisconnects() {
+        for (Player player : this.players) {
+            if (!player.isConnected()) {
+                player.setDead(true);
+                player.setReady(true);
+                player.disconnect();
+            }
+        }
+    }
+
+    private void checkIfPlayersReady() {
+
+        for (Player player : this.players) {
+            this.message.setMessage("Are you ready?");
+            player.update(1, this.message);
+        }
+
+        int readyPlayers = 0;
+
+        while (readyPlayers < this.players.length) {
+
+            this.checkDisconnects();
+
+            readyPlayers = 0;
+
+            for (Player player : this.players) {
+                if (player.getReady()) {
+                    readyPlayers++;
+                    continue;
+                }
+
+                Data action = null;
+                action = player.getInput();
+
+                if (action instanceof DataString) {
+                    String input = ((DataString) action).getData();
+                    System.out.println("From " + player.getName() + ": " + input);
+                    if (input.equals("Ready!")) {
+                        player.setReady(true);
+                        this.message.setMessage(player.getName() + " is ready.");
+                        this.updateObservers(1, this.message);
+                    } else {
+                        System.out.println("Ready erwartet aber folgendes erhalten: " + input);
+                    }
+                }
+            }
+        }
+        this.message.setMessage("Everyone is ready!");
+        this.updateObservers(1, this.message);
     }
 
     private void endGame() {

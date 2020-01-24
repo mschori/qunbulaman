@@ -28,12 +28,16 @@ public class Server {
         try {
             serverSocket = new ServerSocket(this.port);
 
+            System.out.println("Server gestartet und einsatzbereit.");
+
             while (true) {
 
                 SocketHandler tmp_socket = new SocketHandler(serverSocket.accept());
                 Data firstInputFromClient = tmp_socket.receiveForce();
 
                 String input = (String) firstInputFromClient.getData();
+
+                System.out.println("Input: " + input);
 
                 if (input.matches("^Name: .*")) {
                     Player player = new Player(tmp_socket);
@@ -44,14 +48,18 @@ public class Server {
                     this.informPlayers(playerName + " joined game!");
                 } else {
                     this.message.setMessage("Melde dich bitte richtig an...");
-                    tmp_socket.send(1, this.message);
+                    tmp_socket.send(1, this.message.getData());
                 }
 
+                System.out.println("Present Players: " + this.catchedPlayers);
+
                 if (this.catchedPlayers.equals(this.amountOfPlayersPerGame)) {
+                    System.out.println(this.amountOfPlayersPerGame + " Players present. Starting the game...");
                     Game game = new Game(this.players, this.generateField(this.difficulty));
                     this.informPlayers("Game starting...");
                     game.start();
                     this.catchedPlayers = 0;
+                    this.players = new Player[this.amountOfPlayersPerGame];
                 }
             }
         } catch (IOException e) {

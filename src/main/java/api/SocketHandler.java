@@ -17,6 +17,7 @@ public class SocketHandler extends Thread {
 
     public SocketHandler(Socket sock) {
         this.payloadFactory = new PayloadFactoryImpl();
+        this.dataFactory = new DataFactoryImpl();
         try {
             inStream = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             outStream = new PrintWriter(sock.getOutputStream(), true);
@@ -34,9 +35,9 @@ public class SocketHandler extends Thread {
 
     public Data receiveForce() throws IOException {
         String line = inStream.readLine();
-        if (line.matches("^Message:")) {
+        if (line.contains("Message:")) {
             return this.dataFactory.createData(1, line);
-        } else if (line.matches("^Field:")) {
+        } else if (line.contains("Field:")) {
             return this.dataFactory.createData(2, line);
         } else {
             return null;
@@ -46,9 +47,9 @@ public class SocketHandler extends Thread {
     public Data receive() throws IOException {
         if (inStream.ready()) {
             String line = inStream.readLine();
-            if (line.matches("^Message:")) {
+            if (line.contains("Message:")) {
                 return this.dataFactory.createData(1, line);
-            } else if (line.matches("^Field:")) {
+            } else if (line.contains("Field:")) {
                 return this.dataFactory.createData(2, line);
             } else {
                 return null;

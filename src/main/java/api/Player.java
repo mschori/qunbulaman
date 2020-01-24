@@ -1,9 +1,6 @@
 package api;
 
-
 import api.data.Data;
-
-import java.io.IOException;
 
 public class Player implements GameObserver {
 
@@ -13,6 +10,7 @@ public class Player implements GameObserver {
     private Integer posY;
     private String color;
     private Boolean isDead = false;
+    private Boolean isReady = false;
 
     public Player(SocketHandler socket) {
         this.socket = socket;
@@ -58,12 +56,44 @@ public class Player implements GameObserver {
         isDead = dead;
     }
 
-    public Data getInput() throws IOException {
-        return this.socket.receive();
+    public Boolean getReady() {
+        return isReady;
+    }
+
+    public void setReady(Boolean ready) {
+        isReady = ready;
+    }
+
+    public Data getInput() {
+        try {
+            return this.socket.receive();
+        } catch (Exception e) {
+            this.disconnect();
+            return null;
+        }
+    }
+
+    public Data getInputForce() {
+        try {
+            return this.socket.receiveForce();
+        } catch (Exception e) {
+            this.disconnect();
+            return null;
+        }
+    }
+
+    public void disconnect() {
+        this.socket.closeConnections();
+    }
+
+    public boolean isConnected() {
+        return this.socket.isConnected();
     }
 
     @Override
     public void update(Integer key, Data data) {
-        this.socket.send(key, data.getData());
+        if (this.isConnected()) {
+            this.socket.send(key, data.getData());
+        }
     }
 }
