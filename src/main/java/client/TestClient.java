@@ -30,20 +30,26 @@ public class TestClient {
 
             client.sendMessage(input);
 
-            Data response = null;
-
-            while (response == null) {
-                response = client.getMessage();
-            }
+            Data response = client.getMessage();
 
             if (response instanceof DataString) {
                 System.out.println(((DataString) response).getData());
             } else if (response instanceof DataInteger) {
                 Integer[][] field = ((DataInteger) response).getData();
-                // gib feld aus
-                System.out.print("Feld erhalten!");
+                for (Integer[] line : field) {
+                    for (Integer column : line) {
+                        if (column.equals(50)) {
+                            System.out.print("O");
+                        } else if (column.equals(53)) {
+                            System.out.print("B");
+                        } else if (column.equals(61)) {
+                            System.out.print("X");
+                        }
+                    }
+                    System.out.println();
+                }
             } else {
-                System.out.println("Die Antwort ist kein Feld und keine Message...");
+                System.out.println("Keine Antwort erhalten");
             }
         }
 

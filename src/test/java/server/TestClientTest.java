@@ -3,11 +3,12 @@ package server;
 import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
+import api.fields.Field;
+import api.fields.FieldFactoryImpl;
 import client.TestClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -99,4 +100,25 @@ class TestClientTest {
 
         client.stopConnection();
     }
+
+    @Test
+    void fieldTest() {
+        FieldFactoryImpl fieldFactory = new FieldFactoryImpl();
+        Field fieldClass = fieldFactory.createField(1);
+        Integer[][] field = fieldClass.getField();
+
+        for (Integer[] line : field) {
+            for (Integer column : line) {
+                if (column.equals(50)) {
+                    System.out.print("O");
+                } else if (column.equals(53)) {
+                    System.out.print("B");
+                } else if (column.equals(61)) {
+                    System.out.print("X");
+                }
+            }
+            System.out.println();
+        }
+    }
+
 }

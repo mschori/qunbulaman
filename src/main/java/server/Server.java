@@ -49,6 +49,7 @@ public class Server {
                 } else {
                     this.message.setMessage("Melde dich bitte richtig an...");
                     tmp_socket.send(1, this.message.getData());
+                    tmp_socket.closeConnections();
                 }
 
                 System.out.println("Present Players: " + this.catchedPlayers);
