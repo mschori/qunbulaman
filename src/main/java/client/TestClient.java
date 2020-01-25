@@ -44,6 +44,8 @@ public class TestClient {
                             System.out.print("B");
                         } else if (column.equals(61)) {
                             System.out.print("X");
+                        } else if (column.equals(54)) {
+                            System.out.print("Q");
                         }
                     }
                     System.out.println();

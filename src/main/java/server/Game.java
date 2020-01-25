@@ -118,9 +118,10 @@ public class Game extends Thread {
                     String input = ((DataString) action).getData();
                     System.out.println("From " + this.players[x].getName() + ": " + input);
                     this.calculatePlayerAction(x, input);
-                    this.calculateBomb();
                 }
             }
+
+            this.calculateBomb();
 
             if (this.needToUpdateObservers) {
                 this.updateObservers(2, this.field);
@@ -128,7 +129,6 @@ public class Game extends Thread {
 
             this.checkDisconnects();
             this.checkPlayersAlive();
-            System.out.println(this.playersAlive + " players are alive.");
         }
 
         this.endGame();
@@ -219,7 +219,9 @@ public class Game extends Thread {
             case "left":
                 if (posY > 0) {
                     if (field[posX][posY - 1] == 50 || field[posX][posY - 1] == 53) {
-                        if (field[posX][posY] != 53) {
+                        if (field[posX][posY] == 54) {
+                            field[posX][posY] = 53;
+                        } else {
                             field[posX][posY] = 50;
                         }
                         field[posX][posY - 1] = 60 + (playerNumber + 1);
@@ -231,7 +233,9 @@ public class Game extends Thread {
             case "right":
                 if (posY + 1 < field.length) {
                     if (field[posX][posY + 1] == 50 || field[posX][posY + 1] == 53) {
-                        if (field[posX][posY] != 53) {
+                        if (field[posX][posY] == 54) {
+                            field[posX][posY] = 53;
+                        } else {
                             field[posX][posY] = 50;
                         }
                         field[posX][posY + 1] = 60 + (playerNumber + 1);
@@ -243,7 +247,9 @@ public class Game extends Thread {
             case "up":
                 if (posX > 0) {
                     if (field[posX - 1][posY] == 50 || field[posX - 1][posY] == 53) {
-                        if (field[posX][posY] != 53) {
+                        if (field[posX][posY] == 54) {
+                            field[posX][posY] = 53;
+                        } else {
                             field[posX][posY] = 50;
                         }
                         field[posX - 1][posY] = 60 + (playerNumber + 1);
@@ -255,7 +261,9 @@ public class Game extends Thread {
             case "down":
                 if (posX + 1 < field.length) {
                     if (field[posX + 1][posY] == 50 || field[posX + 1][posY] == 53) {
-                        if (field[posX][posY] != 53) {
+                        if (field[posX][posY] == 54) {
+                            field[posX][posY] = 53;
+                        } else {
                             field[posX][posY] = 50;
                         }
                         field[posX + 1][posY] = 60 + (playerNumber + 1);
@@ -267,7 +275,7 @@ public class Game extends Thread {
             case "bomb":
                 Bomb bomb = new Bomb(posX, posY);
                 this.bombs.add(bomb);
-                field[posX][posY] = 53;
+                field[posX][posY] = 54;
                 this.needToUpdateObservers = true;
                 break;
             case "disconnect":
@@ -293,11 +301,19 @@ public class Game extends Thread {
                 if ((currentTimestamp.getTime() - bomb.getPlacedTimeStamp().getTime()) > 3000) {
                     Integer posX = bomb.getPosX();
                     Integer posY = bomb.getPosY();
-                    for (int x = -1; x < posX + 1; x++) {
-                        for (int y = -1; y < posY + 1; y++) {
-                            if ((posX + x) >= 0 && (posX + x) <= field.length && (posY + y) >= 0 && (posY + y) <= field.length) {
+                    for (int x = -1; x <= 1; x++) {
+                        for (int y = -1; y <= 1; y++) {
+                            if ((posX + x) >= 0 && (posX + x) <= (field.length - 1) && (posY + y) >= 0 && (posY + y) <= (field.length - 1)) {
                                 if (field[posX + x][posY + y] == 51) {
                                     field[posX + x][posY + y] = 50;
+                                } else if (field[posX + x][posY + y] == 54) {
+                                    for (Player player : this.players) {
+                                        if (player.getPosX() == posX + x && player.getPosY() == posY + y) {
+                                            player.setDead(true);
+                                            this.message.setMessage(player.getName() + " ist tod!");
+                                            this.updateObservers(1, this.message);
+                                        }
+                                    }
                                 } else if (field[posX + x][posY + y] == 61) {
                                     field[posX + x][posY + y] = 50;
                                     this.players[0].setDead(true);
@@ -324,13 +340,11 @@ public class Game extends Thread {
                     }
                     field[posX][posY] = 50;
                     bombsToRemove.add(bomb);
+                    this.needToUpdateObservers = true;
                 }
             }
-
             this.bombs.removeAll(bombsToRemove);
-            this.needToUpdateObservers = true;
         }
-
         this.field.setData(field);
     }
 
