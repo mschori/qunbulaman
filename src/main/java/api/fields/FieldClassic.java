@@ -5,13 +5,18 @@ public class FieldClassic implements Field {
     private Integer[][] field;
 
     public FieldClassic() {
-        this.field = new Integer[10][10];
-
-        for (int x = 0; x < field.length; x++) {
-            for (int y = 0; y < field[0].length; y++) {
-                this.field[x][y] = 50;
-            }
-        }
+        this.field = new Integer[][]{
+                {50, 50, 51, 51, 52, 52, 51, 51, 50, 50},
+                {50, 52, 52, 51, 51, 51, 51, 52, 52, 50},
+                {51, 52, 51, 52, 51, 51, 52, 51, 52, 51},
+                {50, 52, 51, 52, 50, 50, 52, 51, 52, 50},
+                {50, 50, 50, 50, 50, 50, 50, 50, 50, 50},
+                {50, 51, 51, 52, 51, 51, 52, 51, 51, 50},
+                {50, 52, 51, 52, 50, 50, 52, 51, 52, 50},
+                {51, 52, 51, 51, 51, 51, 51, 51, 52, 51},
+                {50, 52, 52, 51, 52, 52, 51, 52, 52, 50},
+                {50, 50, 51, 51, 52, 52, 51, 51, 50, 50}
+        };
     }
 
     public Integer[][] getField() {

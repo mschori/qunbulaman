@@ -1,7 +1,5 @@
 package api.fields;
 
-import java.util.Random;
-
 public class FieldFactoryImpl implements FieldFactory {
 
     @Override

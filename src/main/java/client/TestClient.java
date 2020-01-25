@@ -40,12 +40,16 @@ public class TestClient {
                     for (Integer column : line) {
                         if (column.equals(50)) {
                             System.out.print("O");
+                        } else if (column.equals(51)) {
+                            System.out.print("U");
+                        } else if (column.equals(52)) {
+                            System.out.print("K");
                         } else if (column.equals(53)) {
                             System.out.print("B");
-                        } else if (column.equals(61)) {
-                            System.out.print("X");
                         } else if (column.equals(54)) {
                             System.out.print("Q");
+                        } else if (column.equals(61)) {
+                            System.out.print("X");
                         }
                     }
                     System.out.println();
