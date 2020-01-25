@@ -1,15 +1,17 @@
 package client;
 
+import javax.swing.*;
+
 public class QunbulamanThread extends Thread {
 
     private long MIN_FRAME_DURATION = 1000000000 / 60;
 
-    private QunbulamanPanel panel;
+    private JPanel panel;
     private long passedFrameTime, lastFrameTime, delta;
     private int framesPerSecond;
 
 
-    public QunbulamanThread(QunbulamanPanel panel){
+    public QunbulamanThread(JPanel panel){
 
         this.panel = panel;
 
