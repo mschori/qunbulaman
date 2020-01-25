@@ -310,7 +310,7 @@ public class Game extends Thread {
                                     for (Player player : this.players) {
                                         if (player.getPosX() == posX + x && player.getPosY() == posY + y) {
                                             player.setDead(true);
-                                            this.messageObject.setMessage(player.getName() + " ist tod!");
+                                            this.messageObject.setMessage(player.getName() + " ist tot!");
                                             this.updateObservers(1, this.messageObject);
                                         }
                                     }
@@ -318,7 +318,7 @@ public class Game extends Thread {
                                     int currentPlayer = field[posX + x][posY + y] - 61;
                                     field[posX + x][posY + y] = 50;
                                     this.players[currentPlayer].setDead(true);
-                                    this.messageObject.setMessage(this.players[currentPlayer].getName() + " ist tod!");
+                                    this.messageObject.setMessage(this.players[currentPlayer].getName() + " ist tot!");
                                     this.updateObservers(1, this.messageObject);
                                 }
                             }
