@@ -6,6 +6,7 @@ public class BlockDefinition {
     Integer destroyableBlock = 51;
     Integer undestroyableBlock = 52;
     Integer bombBlock = 53;
+    Integer bombBlockWithPlayer = 54;
     Integer playerBlock1 = 61;
     Integer playerBlock2 = 62;
     Integer playerBlock3 = 63;
