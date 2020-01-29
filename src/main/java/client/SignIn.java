@@ -41,8 +41,11 @@ public class SignIn extends JFrame{
         frame.setContentPane(panelMain);
 
         panelTop.setBorder(BorderFactory.createTitledBorder("Top"));
+        panelTop.setPreferredSize(new Dimension(WIDTH, 20));
         panelMid.setBorder(BorderFactory.createTitledBorder("Mid"));
+        panelMid.setPreferredSize(new Dimension(WIDTH, 300));
         panelBottom.setBorder(BorderFactory.createTitledBorder("Bottom"));
+        panelBottom.setPreferredSize(new Dimension(WIDTH, 100));
 
         BoxLayout layout1 = new BoxLayout(panelMain, BoxLayout.Y_AXIS);
 
