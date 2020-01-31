@@ -6,6 +6,7 @@ import api.Player;
 import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
+import com.sun.management.internal.GcInfoBuilder;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -288,7 +289,7 @@ public class Game extends Thread {
 
     /**
      * Calculate existing bombs.
-     * Whitch players dye and whitch blocks get destroyed.
+     * Whitch players die and whitch blocks get destroyed.
      */
     private void calculateBomb() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
@@ -304,6 +305,9 @@ public class Game extends Thread {
                     for (int x = -1; x <= 1; x++) {
                         for (int y = -1; y <= 1; y++) {
                             if ((posX + x) >= 0 && (posX + x) <= (field.length - 1) && (posY + y) >= 0 && (posY + y) <= (field.length - 1)) {
+                                if ((x == -1 && y == -1) || (x == +1 && y == -1) || (x == -1 && y == +1) || (x == +1 && y == +1)) {
+                                    continue;
+                                }
                                 if (field[posX + x][posY + y] == 51) {
                                     field[posX + x][posY + y] = 50;
                                 } else if (field[posX + x][posY + y] == 54) {
