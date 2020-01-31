@@ -124,7 +124,7 @@ public class TestClient_Michael_Schori {
         SocketHandler socketHandler = new SocketHandler(socket);
         this.player = new Player(socketHandler);
         DataString dataString = new DataString();
-        dataString.setMessage("Name: Larch");
+        dataString.setMessage("Name: Test-Lurch");
         this.player.update(1, dataString);
     }
 
