@@ -5,7 +5,6 @@ import api.data.DataInteger;
 import api.data.DataString;
 import api.fields.Field;
 import api.fields.FieldFactoryImpl;
-import client.TestClient;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
