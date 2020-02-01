@@ -5,7 +5,6 @@ import api.SocketHandler;
 import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -20,14 +19,12 @@ public class Client_2 {
 
     private Player player;
 
-
     public static ClientFramesPerSecond thread;
-
-
 
     public static void main(String[] args) {
 
         Client_2 client = new Client_2();
+
 
         // Frame
         JFrame frame = new JFrame("Qunbulaman");
@@ -40,11 +37,13 @@ public class Client_2 {
         // Panels
         JPanel panelMain = new JPanel(new FlowLayout()); // Panel over all
         JPanel panelTop = new JPanel(new FlowLayout()); // Contains the buttons, textfield and a label
-        JPanel panelMid = new JPanel(new FlowLayout()); // Displays the Gamefield
+        JPanel panelMid = new JPanel(new FlowLayout()); // Will be displaying the Gamefield
         JPanel panelBottom = new JPanel(new FlowLayout()); // Displays the Messages from the Actions
+
 
         // Set the ContentPane
         frame.setContentPane(panelMain);
+
 
         // Panel Settings
         panelTop.setPreferredSize(new Dimension(WIDTH, 20));
@@ -53,9 +52,11 @@ public class Client_2 {
         BoxLayout layout1 = new BoxLayout(panelMain, BoxLayout.Y_AXIS);
         panelMain.setLayout(layout1);
 
+
         // Content Settings
         // Name Label
         JLabel nameLabel = new JLabel("Name: ");
+
 
         // Input Field for your Name
         JTextField inputTextField = new JTextField(20);
@@ -82,8 +83,6 @@ public class Client_2 {
         // Textarea where the Servers Messages display
         JTextArea textArea = new JTextArea();
         textArea.setPreferredSize(new Dimension(WIDTH-20, 100));
-
-
 
 
         // Key Listeners
@@ -119,6 +118,7 @@ public class Client_2 {
                 }            }
         });
 
+
         // Adding everything together
         frame.getContentPane().add(panelTop);
         frame.getContentPane().add(panelMid);
@@ -127,14 +127,15 @@ public class Client_2 {
         panelTop.add(inputTextField);
         panelTop.add(submit);
         panelTop.add(ready);
-
         panelBottom.add(textArea);
 
 
         // Show
-
         frame.setVisible(true);
 
+
+        // Puts the Focus on the Mid-Panel,
+        // differentiate between the variations of reponses and displays each response in panelMid or TextArea
         while (true) {
             try {
                 panelMid.requestFocus();
@@ -146,6 +147,8 @@ public class Client_2 {
         }
     }
 
+
+    //Login with Ip Port and Username with Response from each Player
     private void login(String ip, int port, String username) throws IOException {
         Socket socket = new Socket(ip, port);
         SocketHandler socketHandler = new SocketHandler(socket);
@@ -155,9 +158,11 @@ public class Client_2 {
         this.player.update(1, dataString);
     }
 
+
     private Data getMessage() {
         return this.player.getInput();
     }
+
 
     private void displayResponse(Data response, JTextArea textArea, JPanel panelMid) {
         if (response instanceof DataString) {
@@ -221,7 +226,7 @@ public class Client_2 {
     }
 
 
-
+    // Adding message from Server to TextArea
     private void addToTextArea(JTextArea textArea, String message) {
 
             textArea.append(message + "\n");

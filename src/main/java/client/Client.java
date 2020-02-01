@@ -5,15 +5,11 @@ import api.SocketHandler;
 import api.data.Data;
 import api.data.DataInteger;
 import api.data.DataString;
-
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 
@@ -23,14 +19,12 @@ public class Client{
 
     private Player player;
 
-
     public static ClientFramesPerSecond thread;
-
-
 
     public static void main(String[] args) {
 
         Client client = new Client();
+
 
         // Frame
         JFrame frame = new JFrame("Qunbulaman");
@@ -43,11 +37,13 @@ public class Client{
         // Panels
         JPanel panelMain = new JPanel(new FlowLayout()); // Panel over all
         JPanel panelTop = new JPanel(new FlowLayout()); // Contains the buttons, textfield and a label
-        JPanel panelMid = new JPanel(new FlowLayout()); // Displays the Gamefield
+        JPanel panelMid = new JPanel(new FlowLayout()); // Will be displaying the Gamefield
         JPanel panelBottom = new JPanel(new FlowLayout()); // Displays the Messages from the Actions
+
 
         // Set the ContentPane
         frame.setContentPane(panelMain);
+
 
         // Panel Settings
         panelTop.setPreferredSize(new Dimension(WIDTH, 20));
@@ -56,9 +52,11 @@ public class Client{
         BoxLayout layout1 = new BoxLayout(panelMain, BoxLayout.Y_AXIS);
         panelMain.setLayout(layout1);
 
+
         // Content Settings
         // Name Label
         JLabel nameLabel = new JLabel("Name: ");
+
 
         // Input Field for your Name
         JTextField inputTextField = new JTextField(20);
@@ -82,11 +80,9 @@ public class Client{
         });
 
 
-        // Textarea where the Servers Messages display
+        // Textarea where the Server Messages will be displayed
         JTextArea textArea = new JTextArea();
         textArea.setPreferredSize(new Dimension(WIDTH-20, 100));
-
-
 
 
         // Key Listeners
@@ -122,6 +118,7 @@ public class Client{
                 }            }
         });
 
+
         // Adding everything together
         frame.getContentPane().add(panelTop);
         frame.getContentPane().add(panelMid);
@@ -130,14 +127,15 @@ public class Client{
         panelTop.add(inputTextField);
         panelTop.add(submit);
         panelTop.add(ready);
-
         panelBottom.add(textArea);
 
 
         // Show
-
         frame.setVisible(true);
 
+
+        // Puts the Focus on the Mid-Panel,
+        // differentiate between the variations of reponses and displays each response in panelMid or TextArea
         while (true) {
             try {
                 panelMid.requestFocus();
@@ -149,6 +147,8 @@ public class Client{
         }
     }
 
+
+    //Login with Ip Port and Username with Response from each Player
     private void login(String ip, int port, String username) throws IOException {
         Socket socket = new Socket(ip, port);
         SocketHandler socketHandler = new SocketHandler(socket);
@@ -158,9 +158,11 @@ public class Client{
         this.player.update(1, dataString);
     }
 
+
     private Data getMessage() {
         return this.player.getInput();
     }
+
 
     private void displayResponse(Data response, JTextArea textArea, JPanel panelMid) {
         if (response instanceof DataString) {
@@ -224,7 +226,7 @@ public class Client{
     }
 
 
-
+    // Adding message from Server to TextArea
     private void addToTextArea(JTextArea textArea, String message) {
 
             textArea.append(message + "\n");
