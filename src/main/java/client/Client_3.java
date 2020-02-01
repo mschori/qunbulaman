@@ -160,6 +160,7 @@ public class Client_3 {
     }
 
 
+    // Looks what the player class did get from the server as input
     private Data getMessage() {
         return this.player.getInput();
     }

@@ -158,7 +158,7 @@ public class Client{
         this.player.update(1, dataString);
     }
 
-
+    // Looks what the player class did get from the server as input
     private Data getMessage() {
         return this.player.getInput();
     }
