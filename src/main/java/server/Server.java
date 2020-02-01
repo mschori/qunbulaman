@@ -12,7 +12,7 @@ import java.net.ServerSocket;
 public class Server {
 
     // Constants
-    private final Integer amountOfPlayersPerGame = 1;
+    private final Integer amountOfPlayersPerGame = 4;
     private final Integer port = 3141;
     private final Integer difficulty = 1;
 

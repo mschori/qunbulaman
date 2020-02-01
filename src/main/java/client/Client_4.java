@@ -7,17 +7,14 @@ import api.data.DataInteger;
 import api.data.DataString;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 
-public class Client{
+public class Client_4 {
 
     public static final int HEIGHT = 750, WIDTH = 550;
 
@@ -30,7 +27,7 @@ public class Client{
 
     public static void main(String[] args) {
 
-        Client client = new Client();
+        Client_4 client = new Client_4();
 
         // Frame
         JFrame frame = new JFrame("Qunbulaman");
@@ -154,7 +151,7 @@ public class Client{
         SocketHandler socketHandler = new SocketHandler(socket);
         this.player = new Player(socketHandler);
         DataString dataString = new DataString();
-        dataString.setMessage("Name: Sladjan" + username);
+        dataString.setMessage("Name: Michael" + username);
         this.player.update(1, dataString);
     }
 
