@@ -13,9 +13,6 @@ import java.util.List;
 
 public class Game extends Thread {
 
-    // Constants
-    private final Integer amountSurvivors = 0;
-
     // Propertys
     private Player[] players;
     private List<GameObserver> observers = new ArrayList<>();
@@ -73,7 +70,9 @@ public class Game extends Thread {
         this.messageObject.setMessage("Das Spiel beginnt in 3 Sekunden.");
         this.updateObservers(1, this.messageObject);
 
-        while (this.playersAlive > this.amountSurvivors) {
+        // Constants
+        Integer amountSurvivors = 1;
+        while (this.playersAlive > amountSurvivors) {
 
             this.needToUpdateObservers = false;
 
@@ -299,6 +298,7 @@ public class Game extends Thread {
         if (!this.bombs.isEmpty()) {
             for (Bomb bomb : this.bombs) {
                 if ((currentTimestamp.getTime() - bomb.getPlacedTimeStamp().getTime()) > 3000) {
+                    this.needToUpdateObservers = true;
                     Integer posX = bomb.getPosX();
                     Integer posY = bomb.getPosY();
                     for (int x = -1; x <= 1; x++) {
@@ -329,7 +329,6 @@ public class Game extends Thread {
                     }
                     field[posX][posY] = 50;
                     bombsToRemove.add(bomb);
-                    this.needToUpdateObservers = true;
                 }
             }
             this.bombs.removeAll(bombsToRemove);
